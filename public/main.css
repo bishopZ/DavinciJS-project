@@ -34,6 +34,11 @@ h1 {
   transition: transform .5s;
 }
 
+.square-container {
+  perspective: 50px;
+  display: inline-block;
+}
+
 .square1:hover {
   transform: skewX(45deg);
   transition: transform .5s;
@@ -54,14 +59,8 @@ h1 {
   transition: transform .5s;
 }
 
-.square5-container {
-  perspective: 50px;
-  display: inline-block;
-}
-
 .square5:hover {
   -webkit-transform: rotateX(45deg);
-  /* Chrome, Safari, Opera  */
   transform: rotateX(45deg);
   transition: transform .5s;
 }

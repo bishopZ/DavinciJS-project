@@ -58,31 +58,31 @@
 	
 	var _pagesTodo2 = _interopRequireDefault(_pagesTodo);
 	
-	var _pagesProject = __webpack_require__(52);
+	var _pagesProject = __webpack_require__(53);
 	
 	var _pagesProject2 = _interopRequireDefault(_pagesProject);
 	
-	var _pagesFunnySquares = __webpack_require__(53);
+	var _pagesFunnySquares = __webpack_require__(54);
 	
 	var _pagesFunnySquares2 = _interopRequireDefault(_pagesFunnySquares);
 	
 	(0, _jquery2['default'])(function () {
 	
-		// what page are we on?
-		var url = window.location.pathname;
+	  // what page are we on?
+	  var url = window.location.pathname;
 	
-		// our first javascript router
-		switch (url) {
-			case '/pages/todo.html':
-				_pagesTodo2['default'].init();
-				break;
-			case '/pages/project.html':
-				// init the project javascript
-				break;
-			case '/pages/funnySquares.html':
-				_pagesFunnySquares2['default'].init();
-				break;
-		}
+	  // our first javascript router
+	  switch (url) {
+	    case '/pages/todo.html':
+	      _pagesTodo2['default'].init();
+	      break;
+	    case '/pages/project.html':
+	      // init the project javascript
+	      break;
+	    case '/pages/funnySquares.html':
+	      _pagesFunnySquares2['default'].init();
+	      break;
+	  }
 	});
 
 /***/ },
@@ -9938,7 +9938,7 @@
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"todo-container":"todo-container","add-todo-container":"add-todo-container","col-md-10":"col-md-10","col-md-2":"col-md-2","square":"square","square1":"square1","square2":"square2","square3":"square3","square4":"square4","square5-container":"square5-container","square5":"square5","square6":"square6"};
+	module.exports = {"todo-container":"todo-container","add-todo-container":"add-todo-container","col-md-10":"col-md-10","col-md-2":"col-md-2","square":"square","square-container":"square-container","square1":"square1","square2":"square2","square3":"square3","square4":"square4","square5":"square5","square6":"square6"};
 
 /***/ },
 /* 3 */,
@@ -9963,13 +9963,17 @@
 	
 	var _lscache2 = _interopRequireDefault(_lscache);
 	
+	var _htmlTemplatesTodoItemHtml = __webpack_require__(39);
+	
+	var _htmlTemplatesTodoItemHtml2 = _interopRequireDefault(_htmlTemplatesTodoItemHtml);
+	
 	// Data Model
 	
 	var $ = __webpack_require__(1);
 	
 	// legacy loading for bootstrap
 	window.jQuery = window.$ = $;
-	__webpack_require__(39);
+	__webpack_require__(40);
 	
 	var savedData = _lscache2['default'].get('todos');
 	var todos;
@@ -9997,24 +10001,25 @@
 	    app.bindEvents();
 	  },
 	  compileTemplates: function compileTemplates() {
-	    template = $('[type="text/x-template"]');
-	    template = _handlebars2['default'].compile(template.first().html());
+	    template = _handlebars2['default'].compile(_htmlTemplatesTodoItemHtml2['default']);
 	  },
 	  unbindEvents: function unbindEvents() {
 	    $('.list-group-item').off();
 	    $('.add-todo-container button').off();
 	    $('input[type="checkbox"]').off();
 	    $('.list-group-item button').off();
+	    $('.title-edit input').off();
 	  },
 	  bindEvents: function bindEvents() {
 	    app.bindHoverEvents();
 	    app.bindCheckboxEvents();
 	    app.bindAddTodoEvents();
 	    app.bindRemoveTodoEvents();
+	    app.bindEditTodoEvents();
 	  },
 	  bindHoverEvents: function bindHoverEvents() {
 	    var $items = $('.list-group-item');
-	    $items.on('mouseover', function (event) {
+	    $items.on('mouseover', function () {
 	      $(this).addClass('list-group-item-success');
 	    });
 	    $items.on('mouseout', function () {
@@ -10037,7 +10042,11 @@
 	    $container.find('button').on('click', function () {
 	      var newTodoTitle = $container.find('input').val();
 	      if (_underscore2['default'].isString(newTodoTitle) && newTodoTitle.length > 2) {
-	        var newTodoObject = { title: newTodoTitle, completed: false };
+	        var newTodoObject = {
+	          id: todos.length,
+	          title: newTodoTitle,
+	          completed: false
+	        };
 	        todos.push(newTodoObject);
 	        $container.find('input').val("");
 	        app.render();
@@ -10049,6 +10058,31 @@
 	      var index = $(this).parent().parent().index();
 	      todos.splice(index, 1);
 	      app.render();
+	    });
+	  },
+	  bindEditTodoEvents: function bindEditTodoEvents() {
+	    $('.title').on('click', function () {
+	      var $parent = $(this).parent();
+	      $parent.find('.title').addClass('hidden');
+	      $parent.find('.title-edit').removeClass('hidden');
+	    });
+	    $('.title-edit input').on('keypress', function (event) {
+	      var key = event.which;
+	      // if they hit the enter key
+	      if (key === 13) {
+	        var newTitle = $(this).val();
+	        var editId = $(this).attr('data-id');
+	        editId = parseInt(editId, 10);
+	        // update the title in our model
+	        var editTodo = _underscore2['default'].filter(todos, function (todo) {
+	          if (todo.id === editId) {
+	            return true;
+	          }
+	          return false;
+	        });
+	        editTodo[0].title = newTitle;
+	        app.render();
+	      }
 	    });
 	  }
 	};
@@ -16753,10 +16787,15 @@
 
 /***/ },
 /* 39 */
+/***/ function(module, exports) {
+
+	module.exports = "module.exports = \"<li class=\\\"list-group-item row {{#if completed}}disabled{{/if}}\\\">\\n  <div class=\\\"col-sm-1\\\">\\n    <input type=\\\"checkbox\\\" {{#if completed}}checked{{/if}}>\\n  </div>\\n  <div class=\\\"col-sm-10 title\\\">{{title}}</div>\\n  <div class=\\\"col-sm-10 title-edit hidden\\\">\\n    <input type=\\\"text\\\" class=\\\"form-control\\\" value=\\\"{{title}}\\\" data-id=\\\"{{id}}\\\">\\n  </div>\\n  <div class=\\\"col-sm-1\\\">\\n    <button type=\\\"button\\\" class=\\\"close\\\" aria-label=\\\"Close\\\">\\n      <span aria-hidden=\\\"true\\\">&times;</span>\\n    </button>\\n  </div>\\n</li>\";";
+
+/***/ },
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-	__webpack_require__(40)
 	__webpack_require__(41)
 	__webpack_require__(42)
 	__webpack_require__(43)
@@ -16768,9 +16807,10 @@
 	__webpack_require__(49)
 	__webpack_require__(50)
 	__webpack_require__(51)
+	__webpack_require__(52)
 
 /***/ },
-/* 40 */
+/* 41 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -16835,7 +16875,7 @@
 
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -16935,7 +16975,7 @@
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17061,7 +17101,7 @@
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17304,7 +17344,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17521,7 +17561,7 @@
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17692,7 +17732,7 @@
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18035,7 +18075,7 @@
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18555,7 +18595,7 @@
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18669,7 +18709,7 @@
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18847,7 +18887,7 @@
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -19008,7 +19048,7 @@
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -19176,7 +19216,7 @@
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19185,18 +19225,53 @@
 	module.exports = app;
 
 /***/ },
-/* 53 */
-/***/ function(module, exports) {
+/* 54 */
+/***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _jquery = __webpack_require__(1);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _underscore = __webpack_require__(7);
+	
+	var _underscore2 = _interopRequireDefault(_underscore);
+	
+	var _htmlTemplatesFunnySquareHtml = __webpack_require__(55);
+	
+	var _htmlTemplatesFunnySquareHtml2 = _interopRequireDefault(_htmlTemplatesFunnySquareHtml);
+	
+	var _handlebars = __webpack_require__(8);
+	
+	var _handlebars2 = _interopRequireDefault(_handlebars);
+	
+	var template;
 	var app = {
-		init: function init() {
-			// alert('funny squares');
-		}
+	  init: function init() {
+	    template = _handlebars2['default'].compile(_htmlTemplatesFunnySquareHtml2['default']);
+	    app.render();
+	  },
+	  render: function render() {
+	    // display 6 squares
+	    var numberOfSquares = 6;
+	    var renderedHtml = '';
+	    _underscore2['default'].times(numberOfSquares, function (index) {
+	      renderedHtml += template({ id: index + 1 });
+	    });
+	    (0, _jquery2['default'])('body').append(renderedHtml);
+	  }
 	};
 	
 	module.exports = app;
+
+/***/ },
+/* 55 */
+/***/ function(module, exports) {
+
+	module.exports = "module.exports = \"<div class=\\\"square-container\\\">\\n  <div class=\\\"square square{{id}}\\\">\\n    <div class=\\\"inner\\\">{{id}}</div>\\n  </div>\\n</div>\";";
 
 /***/ }
 /******/ ]);
