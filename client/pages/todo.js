@@ -8,11 +8,11 @@ require('bootstrap');
 import _ from 'underscore';
 import Handlebars from 'handlebars';
 import lscache from 'lscache';
-import rawTemplate from 'html!templates/todoItem.html';
+import rawTemplate from 'templates/todoItem.html';
 
 // Data Model
-var savedData = lscache.get('todos');
 var todos;
+var savedData = lscache.get('todos');
 if (savedData === null) {
   todos = [];
 } else {

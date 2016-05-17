@@ -9963,9 +9963,9 @@
 	
 	var _lscache2 = _interopRequireDefault(_lscache);
 	
-	var _htmlTemplatesTodoItemHtml = __webpack_require__(39);
+	var _templatesTodoItemHtml = __webpack_require__(39);
 	
-	var _htmlTemplatesTodoItemHtml2 = _interopRequireDefault(_htmlTemplatesTodoItemHtml);
+	var _templatesTodoItemHtml2 = _interopRequireDefault(_templatesTodoItemHtml);
 	
 	// Data Model
 	
@@ -9975,8 +9975,8 @@
 	window.jQuery = window.$ = $;
 	__webpack_require__(40);
 	
-	var savedData = _lscache2['default'].get('todos');
 	var todos;
+	var savedData = _lscache2['default'].get('todos');
 	if (savedData === null) {
 	  todos = [];
 	} else {
@@ -10001,7 +10001,7 @@
 	    app.bindEvents();
 	  },
 	  compileTemplates: function compileTemplates() {
-	    template = _handlebars2['default'].compile(_htmlTemplatesTodoItemHtml2['default']);
+	    template = _handlebars2['default'].compile(_templatesTodoItemHtml2['default']);
 	  },
 	  unbindEvents: function unbindEvents() {
 	    $('.list-group-item').off();
@@ -16789,7 +16789,7 @@
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "module.exports = \"<li class=\\\"list-group-item row {{#if completed}}disabled{{/if}}\\\">\\n  <div class=\\\"col-sm-1\\\">\\n    <input type=\\\"checkbox\\\" {{#if completed}}checked{{/if}}>\\n  </div>\\n  <div class=\\\"col-sm-10 title\\\">{{title}}</div>\\n  <div class=\\\"col-sm-10 title-edit hidden\\\">\\n    <input type=\\\"text\\\" class=\\\"form-control\\\" value=\\\"{{title}}\\\" data-id=\\\"{{id}}\\\">\\n  </div>\\n  <div class=\\\"col-sm-1\\\">\\n    <button type=\\\"button\\\" class=\\\"close\\\" aria-label=\\\"Close\\\">\\n      <span aria-hidden=\\\"true\\\">&times;</span>\\n    </button>\\n  </div>\\n</li>\";";
+	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  <div class=\"col-sm-10 title\">{{title}}</div>\n  <div class=\"col-sm-10 title-edit hidden\">\n    <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
 
 /***/ },
 /* 40 */
