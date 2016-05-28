@@ -1,6 +1,9 @@
-# MyFirstRepo
+# DaVinci JS Project Server
 
-This is my repo. And it is really cool.
+This is a node server with a WebPack development environment and a Heroku production server.
 
-[make a link](http://google.com)
+[The production server](http://dry-waters-67624.herokuapp.com)
 
+[My linkedin account](http://linkedin.com/in/bishopz)
+
+[DaVinci Coders](http://www.davincicoders.com/)

@@ -66,7 +66,13 @@
 	
 	var _pagesFunnySquares2 = _interopRequireDefault(_pagesFunnySquares);
 	
+	var _componentsHeader = __webpack_require__(56);
+	
+	var _componentsHeader2 = _interopRequireDefault(_componentsHeader);
+	
 	(0, _jquery2['default'])(function () {
+	
+	  _componentsHeader2['default'].init();
 	
 	  // what page are we on?
 	  var url = window.location.pathname;
@@ -76,8 +82,9 @@
 	    case '/pages/todo.html':
 	      _pagesTodo2['default'].init();
 	      break;
-	    case '/pages/project.html':
+	    case '/':
 	      // init the project javascript
+	      // home.init();
 	      break;
 	    case '/pages/funnySquares.html':
 	      _pagesFunnySquares2['default'].init();
@@ -19221,7 +19228,15 @@
 
 	"use strict";
 	
-	var app = {};
+	var app = {
+		init: function init() {
+			app.render();
+		},
+		render: function render() {
+			// make it so
+		}
+	};
+	
 	module.exports = app;
 
 /***/ },
@@ -19272,6 +19287,39 @@
 /***/ function(module, exports) {
 
 	module.exports = "module.exports = \"<div class=\\\"square-container\\\">\\n  <div class=\\\"square square{{id}}\\\">\\n    <div class=\\\"inner\\\">{{id}}</div>\\n  </div>\\n</div>\";";
+
+/***/ },
+/* 56 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _jquery = __webpack_require__(1);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _templatesNavbarHtml = __webpack_require__(57);
+	
+	var _templatesNavbarHtml2 = _interopRequireDefault(_templatesNavbarHtml);
+	
+	var app = {
+	  init: function init() {
+	    app.render();
+	  },
+	  render: function render() {
+	    (0, _jquery2['default'])('header').append(_templatesNavbarHtml2['default']);
+	  }
+	};
+	
+	module.exports = app;
+
+/***/ },
+/* 57 */
+/***/ function(module, exports) {
+
+	module.exports = "<nav>\n  <a role=\"menuitem\" href=\"/pages/todo.html\">Todo Application</a>\n  <a role=\"menuitem\" href=\"/pages/project.html\">My Project</a>\n  <a role=\"menuitem\" href=\"/pages/funnySquares.html\">Funny Squares</a>\n</nav>";
 
 /***/ }
 /******/ ]);
