@@ -27,5 +27,14 @@ $(function(){
     break;
   }
 
+  // Fancy Console Message for Developers
+  console.log("================================");
+  console.log("================================");
+  console.log("=====I am looking for a job=====");
+  console.log("================================");
+  console.log("============call me=============");
+  console.log("================================");
+  console.log("================================");
+
 });
 

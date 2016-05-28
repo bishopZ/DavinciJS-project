@@ -58,15 +58,15 @@
 	
 	var _pagesTodo2 = _interopRequireDefault(_pagesTodo);
 	
-	var _pagesProject = __webpack_require__(53);
+	var _pagesProject = __webpack_require__(54);
 	
 	var _pagesProject2 = _interopRequireDefault(_pagesProject);
 	
-	var _pagesFunnySquares = __webpack_require__(54);
+	var _pagesFunnySquares = __webpack_require__(55);
 	
 	var _pagesFunnySquares2 = _interopRequireDefault(_pagesFunnySquares);
 	
-	var _componentsHeader = __webpack_require__(56);
+	var _componentsHeader = __webpack_require__(57);
 	
 	var _componentsHeader2 = _interopRequireDefault(_componentsHeader);
 	
@@ -90,6 +90,15 @@
 	      _pagesFunnySquares2['default'].init();
 	      break;
 	  }
+	
+	  // Fancy Console Message for Developers
+	  console.log("================================");
+	  console.log("================================");
+	  console.log("=====I am looking for a job=====");
+	  console.log("================================");
+	  console.log("============call me=============");
+	  console.log("================================");
+	  console.log("================================");
 	});
 
 /***/ },
@@ -9974,13 +9983,17 @@
 	
 	var _templatesTodoItemHtml2 = _interopRequireDefault(_templatesTodoItemHtml);
 	
+	var _templatesTodoModalHtml = __webpack_require__(40);
+	
+	var _templatesTodoModalHtml2 = _interopRequireDefault(_templatesTodoModalHtml);
+	
 	// Data Model
 	
 	var $ = __webpack_require__(1);
 	
 	// legacy loading for bootstrap
 	window.jQuery = window.$ = $;
-	__webpack_require__(40);
+	__webpack_require__(41);
 	
 	var todos;
 	var savedData = _lscache2['default'].get('todos');
@@ -9989,6 +10002,14 @@
 	} else {
 	  todos = savedData;
 	}
+	
+	var todoSchema = function todoSchema(todo) {
+	  return _underscore2['default'].defaults(todo, {
+	    id: 0,
+	    title: "",
+	    completed: false
+	  });
+	};
 	
 	// Application
 	var template;
@@ -10049,11 +10070,11 @@
 	    $container.find('button').on('click', function () {
 	      var newTodoTitle = $container.find('input').val();
 	      if (_underscore2['default'].isString(newTodoTitle) && newTodoTitle.length > 2) {
-	        var newTodoObject = {
+	        var newTodoObject = todoSchema({
 	          id: todos.length,
 	          title: newTodoTitle,
 	          completed: false
-	        };
+	        });
 	        todos.push(newTodoObject);
 	        $container.find('input').val("");
 	        app.render();
@@ -10068,29 +10089,46 @@
 	    });
 	  },
 	  bindEditTodoEvents: function bindEditTodoEvents() {
+	
 	    $('.title').on('click', function () {
-	      var $parent = $(this).parent();
-	      $parent.find('.title').addClass('hidden');
-	      $parent.find('.title-edit').removeClass('hidden');
+	      var whichTodo = $(this).attr('data-id');
+	      whichTodo = parseInt(whichTodo, 10);
+	      var editTodo = todos[whichTodo];
+	      var compiledTemplate = _handlebars2['default'].compile(_templatesTodoModalHtml2['default']);
+	      var fullHtml = compiledTemplate(editTodo);
+	
+	      $('body').append(fullHtml);
+	
+	      $('.modal').modal();
+	
+	      $('.close, .btn-default, .modal-backdrop').on('click', function () {
+	        $('.modal, .modal-backdrop').remove();
+	      });
 	    });
-	    $('.title-edit input').on('keypress', function (event) {
-	      var key = event.which;
-	      // if they hit the enter key
-	      if (key === 13) {
-	        var newTitle = $(this).val();
-	        var editId = $(this).attr('data-id');
-	        editId = parseInt(editId, 10);
-	        // update the title in our model
-	        var editTodo = _underscore2['default'].filter(todos, function (todo) {
-	          if (todo.id === editId) {
-	            return true;
-	          }
-	          return false;
-	        });
-	        editTodo[0].title = newTitle;
-	        app.render();
-	      }
-	    });
+	
+	    // $('.title').on('click', function(){
+	    //   var $parent = $(this).parent();
+	    //   $parent.find('.title').addClass('hidden');
+	    //   $parent.find('.title-edit').removeClass('hidden');
+	    // });
+	    // $('.title-edit input').on('keypress', function(event){
+	    //   var key = event.which;
+	    //   // if they hit the enter key
+	    //   if (key === 13) {
+	    //     var newTitle = $(this).val();
+	    //     var editId = $(this).attr('data-id');
+	    //     editId = parseInt(editId, 10);
+	    //     // update the title in our model
+	    //     var editTodo = _.filter(todos, function(todo){
+	    //       if (todo.id === editId) {
+	    //         return true;
+	    //       }
+	    //       return false;
+	    //     });
+	    //     editTodo[0].title = newTitle;
+	    //     app.render();
+	    //   }
+	    // });
 	  }
 	};
 	
@@ -16796,14 +16834,19 @@
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  <div class=\"col-sm-10 title\">{{title}}</div>\n  <div class=\"col-sm-10 title-edit hidden\">\n    <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
+	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  <div class=\"col-sm-10 title\" data-id=\"{{id}}\">{{title}}</div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
 
 /***/ },
 /* 40 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"modal fade\" tabindex=\"-1\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Edit Todo</h4>\n      </div>\n      <div class=\"modal-body\">\n        <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n        <button type=\"button\" class=\"btn btn-primary\">Save changes</button>\n      </div>\n    </div>\n  </div>\n</div>";
+
+/***/ },
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// This file is autogenerated via the `commonjs` Grunt task. You can require() this file in a CommonJS environment.
-	__webpack_require__(41)
 	__webpack_require__(42)
 	__webpack_require__(43)
 	__webpack_require__(44)
@@ -16815,9 +16858,10 @@
 	__webpack_require__(50)
 	__webpack_require__(51)
 	__webpack_require__(52)
+	__webpack_require__(53)
 
 /***/ },
-/* 41 */
+/* 42 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -16882,7 +16926,7 @@
 
 
 /***/ },
-/* 42 */
+/* 43 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -16982,7 +17026,7 @@
 
 
 /***/ },
-/* 43 */
+/* 44 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17108,7 +17152,7 @@
 
 
 /***/ },
-/* 44 */
+/* 45 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17351,7 +17395,7 @@
 
 
 /***/ },
-/* 45 */
+/* 46 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17568,7 +17612,7 @@
 
 
 /***/ },
-/* 46 */
+/* 47 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -17739,7 +17783,7 @@
 
 
 /***/ },
-/* 47 */
+/* 48 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18082,7 +18126,7 @@
 
 
 /***/ },
-/* 48 */
+/* 49 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18602,7 +18646,7 @@
 
 
 /***/ },
-/* 49 */
+/* 50 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18716,7 +18760,7 @@
 
 
 /***/ },
-/* 50 */
+/* 51 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -18894,7 +18938,7 @@
 
 
 /***/ },
-/* 51 */
+/* 52 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -19055,7 +19099,7 @@
 
 
 /***/ },
-/* 52 */
+/* 53 */
 /***/ function(module, exports) {
 
 	/* ========================================================================
@@ -19223,7 +19267,7 @@
 
 
 /***/ },
-/* 53 */
+/* 54 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -19240,7 +19284,7 @@
 	module.exports = app;
 
 /***/ },
-/* 54 */
+/* 55 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19255,7 +19299,7 @@
 	
 	var _underscore2 = _interopRequireDefault(_underscore);
 	
-	var _htmlTemplatesFunnySquareHtml = __webpack_require__(55);
+	var _htmlTemplatesFunnySquareHtml = __webpack_require__(56);
 	
 	var _htmlTemplatesFunnySquareHtml2 = _interopRequireDefault(_htmlTemplatesFunnySquareHtml);
 	
@@ -19283,13 +19327,13 @@
 	module.exports = app;
 
 /***/ },
-/* 55 */
+/* 56 */
 /***/ function(module, exports) {
 
 	module.exports = "module.exports = \"<div class=\\\"square-container\\\">\\n  <div class=\\\"square square{{id}}\\\">\\n    <div class=\\\"inner\\\">{{id}}</div>\\n  </div>\\n</div>\";";
 
 /***/ },
-/* 56 */
+/* 57 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -19300,7 +19344,7 @@
 	
 	var _jquery2 = _interopRequireDefault(_jquery);
 	
-	var _templatesNavbarHtml = __webpack_require__(57);
+	var _templatesNavbarHtml = __webpack_require__(58);
 	
 	var _templatesNavbarHtml2 = _interopRequireDefault(_templatesNavbarHtml);
 	
@@ -19316,7 +19360,7 @@
 	module.exports = app;
 
 /***/ },
-/* 57 */
+/* 58 */
 /***/ function(module, exports) {
 
 	module.exports = "<nav>\n  <a role=\"menuitem\" href=\"/pages/todo.html\">Todo Application</a>\n  <a role=\"menuitem\" href=\"/pages/project.html\">My Project</a>\n  <a role=\"menuitem\" href=\"/pages/funnySquares.html\">Funny Squares</a>\n</nav>";
