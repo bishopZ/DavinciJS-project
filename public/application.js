@@ -9983,10 +9983,6 @@
 	
 	var _templatesTodoItemHtml2 = _interopRequireDefault(_templatesTodoItemHtml);
 	
-	var _templatesTodoModalHtml = __webpack_require__(40);
-	
-	var _templatesTodoModalHtml2 = _interopRequireDefault(_templatesTodoModalHtml);
-	
 	// Data Model
 	
 	var $ = __webpack_require__(1);
@@ -10002,14 +9998,6 @@
 	} else {
 	  todos = savedData;
 	}
-	
-	var todoSchema = function todoSchema(todo) {
-	  return _underscore2['default'].defaults(todo, {
-	    id: 0,
-	    title: "",
-	    completed: false
-	  });
-	};
 	
 	// Application
 	var template;
@@ -10070,11 +10058,11 @@
 	    $container.find('button').on('click', function () {
 	      var newTodoTitle = $container.find('input').val();
 	      if (_underscore2['default'].isString(newTodoTitle) && newTodoTitle.length > 2) {
-	        var newTodoObject = todoSchema({
+	        var newTodoObject = {
 	          id: todos.length,
 	          title: newTodoTitle,
 	          completed: false
-	        });
+	        };
 	        todos.push(newTodoObject);
 	        $container.find('input').val("");
 	        app.render();
@@ -10089,46 +10077,29 @@
 	    });
 	  },
 	  bindEditTodoEvents: function bindEditTodoEvents() {
-	
 	    $('.title').on('click', function () {
-	      var whichTodo = $(this).attr('data-id');
-	      whichTodo = parseInt(whichTodo, 10);
-	      var editTodo = todos[whichTodo];
-	      var compiledTemplate = _handlebars2['default'].compile(_templatesTodoModalHtml2['default']);
-	      var fullHtml = compiledTemplate(editTodo);
-	
-	      $('body').append(fullHtml);
-	
-	      $('.modal').modal();
-	
-	      $('.close, .btn-default, .modal-backdrop').on('click', function () {
-	        $('.modal, .modal-backdrop').remove();
-	      });
+	      var $parent = $(this).parent();
+	      $parent.find('.title').addClass('hidden');
+	      $parent.find('.title-edit').removeClass('hidden');
 	    });
-	
-	    // $('.title').on('click', function(){
-	    //   var $parent = $(this).parent();
-	    //   $parent.find('.title').addClass('hidden');
-	    //   $parent.find('.title-edit').removeClass('hidden');
-	    // });
-	    // $('.title-edit input').on('keypress', function(event){
-	    //   var key = event.which;
-	    //   // if they hit the enter key
-	    //   if (key === 13) {
-	    //     var newTitle = $(this).val();
-	    //     var editId = $(this).attr('data-id');
-	    //     editId = parseInt(editId, 10);
-	    //     // update the title in our model
-	    //     var editTodo = _.filter(todos, function(todo){
-	    //       if (todo.id === editId) {
-	    //         return true;
-	    //       }
-	    //       return false;
-	    //     });
-	    //     editTodo[0].title = newTitle;
-	    //     app.render();
-	    //   }
-	    // });
+	    $('.title-edit input').on('keypress', function (event) {
+	      var key = event.which;
+	      // if they hit the enter key
+	      if (key === 13) {
+	        var newTitle = $(this).val();
+	        var editId = $(this).attr('data-id');
+	        editId = parseInt(editId, 10);
+	        // update the title in our model
+	        var editTodo = _underscore2['default'].filter(todos, function (todo) {
+	          if (todo.id === editId) {
+	            return true;
+	          }
+	          return false;
+	        });
+	        editTodo[0].title = newTitle;
+	        app.render();
+	      }
+	    });
 	  }
 	};
 	
@@ -16834,15 +16805,10 @@
 /* 39 */
 /***/ function(module, exports) {
 
-	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  <div class=\"col-sm-10 title\" data-id=\"{{id}}\">{{title}}</div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
+	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  <div class=\"col-sm-10 title\">{{title}}</div>\n  <div class=\"col-sm-10 title-edit hidden\">\n    <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
 
 /***/ },
-/* 40 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"modal fade\" tabindex=\"-1\" role=\"dialog\">\n  <div class=\"modal-dialog\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\">Edit Todo</h4>\n      </div>\n      <div class=\"modal-body\">\n        <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n        <button type=\"button\" class=\"btn btn-primary\">Save changes</button>\n      </div>\n    </div>\n  </div>\n</div>";
-
-/***/ },
+/* 40 */,
 /* 41 */
 /***/ function(module, exports, __webpack_require__) {
 

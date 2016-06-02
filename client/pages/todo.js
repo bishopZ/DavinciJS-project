@@ -9,7 +9,6 @@ import _ from 'underscore';
 import Handlebars from 'handlebars';
 import lscache from 'lscache';
 import rawTemplate from 'templates/todoItem.html';
-import modalTemplate from 'templates/todoModal.html';
 
 // Data Model
 var todos;
@@ -20,13 +19,6 @@ if (savedData === null) {
   todos = savedData;
 }
 
-var todoSchema = function(todo){
-  return _.defaults(todo, {
-    id: 0,
-    title: "",
-    completed: false 
-  });
-}
 
 // Application
 var template;
@@ -87,11 +79,11 @@ var app = {
     $container.find('button').on('click', function(){
       var newTodoTitle = $container.find('input').val();
       if (_.isString(newTodoTitle) && newTodoTitle.length > 2) {
-        var newTodoObject = todoSchema({
+        var newTodoObject = {
           id: todos.length,
           title: newTodoTitle, 
           completed: false 
-        });
+        };
         todos.push(newTodoObject);
         $container.find('input').val("");
         app.render(); 
@@ -106,47 +98,29 @@ var app = {
     });
   },
   bindEditTodoEvents: function(){
-
     $('.title').on('click', function(){
-      var whichTodo = $(this).attr('data-id');
-      whichTodo = parseInt(whichTodo, 10);
-      var editTodo = todos[whichTodo];
-      var compiledTemplate = Handlebars.compile(modalTemplate);
-      var fullHtml = compiledTemplate(editTodo);
-
-      $('body').append(fullHtml);
-
-      $('.modal').modal();
-
-      $('.close, .btn-default, .modal-backdrop').on('click', function(){
-        $('.modal, .modal-backdrop').remove();
-      });
-
+      var $parent = $(this).parent();
+      $parent.find('.title').addClass('hidden');
+      $parent.find('.title-edit').removeClass('hidden');
     });
-
-    // $('.title').on('click', function(){
-    //   var $parent = $(this).parent();
-    //   $parent.find('.title').addClass('hidden');
-    //   $parent.find('.title-edit').removeClass('hidden');
-    // });
-    // $('.title-edit input').on('keypress', function(event){
-    //   var key = event.which;
-    //   // if they hit the enter key
-    //   if (key === 13) {
-    //     var newTitle = $(this).val();
-    //     var editId = $(this).attr('data-id');
-    //     editId = parseInt(editId, 10);
-    //     // update the title in our model
-    //     var editTodo = _.filter(todos, function(todo){
-    //       if (todo.id === editId) {
-    //         return true;
-    //       }
-    //       return false;
-    //     });
-    //     editTodo[0].title = newTitle;
-    //     app.render();
-    //   }
-    // });
+    $('.title-edit input').on('keypress', function(event){
+      var key = event.which;
+      // if they hit the enter key
+      if (key === 13) {
+        var newTitle = $(this).val();
+        var editId = $(this).attr('data-id');
+        editId = parseInt(editId, 10);
+        // update the title in our model
+        var editTodo = _.filter(todos, function(todo){
+          if (todo.id === editId) {
+            return true;
+          }
+          return false;
+        });
+        editTodo[0].title = newTitle;
+        app.render();
+      }
+    });
   }
 };
 
