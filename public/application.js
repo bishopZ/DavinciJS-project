@@ -10000,6 +10000,7 @@
 	var TodoModel;
 	var TodoControllerView;
 	var TodoView;
+	var TodoItemView;
 	
 	var todoModel;
 	var todoControllerView;
@@ -10034,6 +10035,19 @@
 	      return _underscore2['default'].defaults(todo, schema);
 	    });
 	    return data;
+	  },
+	  addItem: function addItem(newTitle) {
+	    var newTodo = { title: newTitle };
+	    var todos = this.get('todos');
+	    todos.push(newTodo);
+	    this.set('todos', todos);
+	    this.save();
+	  },
+	  removeItem: function removeItem(id) {
+	    // finally actually remove the damn thing
+	    var todos = this.get('todos');
+	    todos.splice(id, 1);
+	    this.save();
 	  }
 	});
 	
@@ -10042,12 +10056,57 @@
 	// View
 	
 	TodoControllerView = _backbone2['default'].View.extend({
-	  el: 'body',
+	  el: '.todo-container',
 	  model: todoModel,
-	  events: {},
-	  initialize: function initialize() {},
+	  events: {
+	    "click .btn-add": "addTodoItem"
+	  },
+	  initialize: function initialize() {
+	    this.model.fetch();
+	  },
 	  render: function render() {
-	    alert('backbone!');
+	    // render the todo items
+	    var todos = this.model.get('todos');
+	    var $ul = this.$el.find('ul');
+	    $ul.html('');
+	    todos.map(function (todo) {
+	      var view = new TodoItemView(todo);
+	      $ul.append(view.$el);
+	    });
+	  },
+	  addTodoItem: function addTodoItem() {
+	    var $input = this.$el.find('.input-name');
+	    var newTitle = $input.val();
+	    if (newTitle === '') {
+	      return;
+	    }
+	    this.model.addItem(newTitle);
+	    $input.val('');
+	    this.render();
+	  },
+	  removeItem: function removeItem(id) {
+	    this.model.removeItem(id);
+	    this.render();
+	  }
+	});
+	
+	TodoItemView = _backbone2['default'].View.extend({
+	  tagName: 'li', // el = <li class="list-group-item"></li>
+	  className: 'list-group-item row',
+	  events: {
+	    'click .close': 'removeItem'
+	  },
+	  template: _handlebars2['default'].compile(_templatesTodoItemHtml2['default']),
+	  initialize: function initialize(todo) {
+	    this.data = todo;
+	    this.render();
+	  },
+	  render: function render() {
+	    this.$el.html(this.template(this.data));
+	  },
+	  removeItem: function removeItem() {
+	    debugger;
+	    todoControllerView.removeItem(this.data.id);
 	  }
 	});
 	
@@ -18682,7 +18741,7 @@
 /* 40 */
 /***/ function(module, exports) {
 
-	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  <div class=\"col-sm-10 title\">{{title}}</div>\n  <div class=\"col-sm-10 title-edit hidden\">\n    <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
+	module.exports = "<div class=\"col-sm-1\">\n  <input type=\"checkbox\">\n</div>\n<div class=\"col-sm-10 title\">{{title}}</div>\n<div class=\"col-sm-10 title-edit hidden\">\n  <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n</div>\n<div class=\"col-sm-1\">\n  <button type=\"button\" class=\"close\" aria-label=\"Close\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>";
 
 /***/ },
 /* 41 */
