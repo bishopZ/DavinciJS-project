@@ -10017,7 +10017,7 @@
 	  },
 	  todoSchema: {
 	    id: 0,
-	    title: "",
+	    title: '',
 	    completed: false
 	  },
 	  fetch: function fetch() {
@@ -10063,7 +10063,7 @@
 	  el: '.todo-container',
 	  model: todoModel,
 	  events: {
-	    "click .btn-add": "addTodoItem"
+	    'click .btn-add': 'addTodoItem'
 	  },
 	  initialize: function initialize() {
 	    this.model.fetch();
@@ -21204,9 +21204,9 @@
 	
 	var _underscore2 = _interopRequireDefault(_underscore);
 	
-	var _htmlTemplatesFunnySquareHtml = __webpack_require__(56);
+	var _templatesFunnySquareHtml = __webpack_require__(56);
 	
-	var _htmlTemplatesFunnySquareHtml2 = _interopRequireDefault(_htmlTemplatesFunnySquareHtml);
+	var _templatesFunnySquareHtml2 = _interopRequireDefault(_templatesFunnySquareHtml);
 	
 	var _handlebars = __webpack_require__(9);
 	
@@ -21215,7 +21215,7 @@
 	var template;
 	var app = {
 	  init: function init() {
-	    template = _handlebars2['default'].compile(_htmlTemplatesFunnySquareHtml2['default']);
+	    template = _handlebars2['default'].compile(_templatesFunnySquareHtml2['default']);
 	    app.render();
 	  },
 	  render: function render() {
@@ -21235,7 +21235,7 @@
 /* 56 */
 /***/ function(module, exports) {
 
-	module.exports = "module.exports = \"<div class=\\\"square-container\\\">\\n  <div class=\\\"square square{{id}}\\\">\\n    <div class=\\\"inner\\\">{{id}}</div>\\n  </div>\\n</div>\";";
+	module.exports = "<div class=\"square-container\">\n  <div class=\"square square{{id}}\">\n    <div class=\"inner\">{{id}}</div>\n  </div>\n</div>";
 
 /***/ },
 /* 57 */
@@ -21245,9 +21245,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _underscore = __webpack_require__(7);
-	
-	var _underscore2 = _interopRequireDefault(_underscore);
+	// import _ from 'underscore';
 	
 	var _backbone = __webpack_require__(8);
 	
@@ -21275,9 +21273,7 @@
 	
 	// legacy loading for bootstrap
 	window.jQuery = window.$ = $;
-	__webpack_require__(41);
-	
-	var accountModelConfigObject = {
+	__webpack_require__(41);var accountModelConfigObject = {
 	  defaults: {
 	    accounts: []
 	  },
@@ -21338,7 +21334,7 @@
 	  tagName: 'div',
 	  template: _handlebars2['default'].compile(_templatesCreateAccountHtml2['default']),
 	  events: {
-	    'click .btn-done': 'submitForm'
+	    'click': 'submitForm'
 	  },
 	  initialize: function initialize() {
 	    this.render();
