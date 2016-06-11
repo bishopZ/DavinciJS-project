@@ -18788,7 +18788,7 @@
 /* 40 */
 /***/ function(module, exports) {
 
-	module.exports = "<div></div>";
+	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  \n</li>";
 
 /***/ },
 /* 41 */
