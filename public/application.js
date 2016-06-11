@@ -18788,7 +18788,7 @@
 /* 40 */
 /***/ function(module, exports) {
 
-	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    {{#if completed}}\n      <input type=\"checkbox\" checked=\"checked\">\n    {{else}}\n      <input type=\"checkbox\">    \n    {{/if}}\n  </div>\n  <div class=\"col-sm-10 title\">{{title}}</div>\n  <div class=\"col-sm-10 title-edit hidden\">\n    <input type=\"text\" class=\"form-control\" value=\"{{title}}\" data-id=\"{{id}}\">\n  </div>\n  <div class=\"col-sm-1\">\n    <button type=\"button\" class=\"close\" aria-label=\"Close\">\n      <span aria-hidden=\"true\">&times;</span>\n    </button>\n  </div>\n</li>";
+	module.exports = "<div class=\"col-sm-1\">\n  {{#if completed}}\n    <input class=\"completed-checkbox\" type=\"checkbox\" checked>\n  {{else}}\n    <input class=\"completed-checkbox\" type=\"checkbox\">\n  {{/if}}\n</div>\n<div class=\"col-sm-10 title\">{{title}}</div>\n<div class=\"col-sm-10 title-edit hidden\">\n  <input type=\"text\" class=\"form-control title-edit-input\" value=\"{{title}}\">\n</div>\n<div class=\"col-sm-1\">\n  <button type=\"button\" class=\"close\" aria-label=\"Close\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n";
 
 /***/ },
 /* 41 */
