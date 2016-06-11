@@ -1,6 +1,10 @@
 <li class="list-group-item row {{#if completed}}disabled{{/if}}">
   <div class="col-sm-1">
-    <input type="checkbox" checked="{{#if completed}}checked{{/if}}">
+    {{#if completed}}
+      <input type="checkbox" checked="checked">
+    {{#else}}
+      <input type="checkbox">    
+    {{/if}}
   </div>
   <div class="col-sm-10 title">{{title}}</div>
   <div class="col-sm-10 title-edit hidden">
