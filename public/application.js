@@ -18788,7 +18788,7 @@
 /* 40 */
 /***/ function(module, exports) {
 
-	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  \n</li>";
+	module.exports = "<li class=\"list-group-item row {{#if completed}}disabled{{/if}}\">\n  <div class=\"col-sm-1\">\n    <input type=\"checkbox\" {{#if completed}}checked{{/if}}>\n  </div>\n  \n</li>";
 
 /***/ },
 /* 41 */
