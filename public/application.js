@@ -62,6 +62,10 @@
 	
 	var _pagesProject2 = _interopRequireDefault(_pagesProject);
 	
+	var _pagesPhotoSearch = __webpack_require__(62);
+	
+	var _pagesPhotoSearch2 = _interopRequireDefault(_pagesPhotoSearch);
+	
 	var _pagesFunnySquares = __webpack_require__(55);
 	
 	var _pagesFunnySquares2 = _interopRequireDefault(_pagesFunnySquares);
@@ -89,6 +93,9 @@
 	    case '/':
 	      // init the project javascript
 	      // home.init();
+	      break;
+	    case '/pages/photoSearch.html':
+	      _pagesPhotoSearch2['default'].init();
 	      break;
 	    case '/pages/funnySquares.html':
 	      _pagesFunnySquares2['default'].init();
@@ -9960,7 +9967,7 @@
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
-	module.exports = {"todo-container":"todo-container","add-todo-container":"add-todo-container","col-md-10":"col-md-10","col-md-2":"col-md-2","square":"square","square-container":"square-container","square1":"square1","square2":"square2","square3":"square3","square4":"square4","square5":"square5","square6":"square6","page-container":"page-container"};
+	module.exports = {"todo-container":"todo-container","add-todo-container":"add-todo-container","col-md-10":"col-md-10","col-md-2":"col-md-2","search-container":"search-container","photo":"photo","square":"square","square-container":"square-container","square1":"square1","square2":"square2","square3":"square3","square4":"square4","square5":"square5","square6":"square6","page-container":"page-container"};
 
 /***/ },
 /* 3 */,
@@ -21439,7 +21446,53 @@
 /* 61 */
 /***/ function(module, exports) {
 
-	module.exports = "<nav>\n  <a role=\"menuitem\" href=\"/pages/todo.html\">Todo Application</a>\n  <a role=\"menuitem\" href=\"/pages/project.html\">My Project</a>\n  <a role=\"menuitem\" href=\"/pages/funnySquares.html\">Funny Squares</a>\n  <a role=\"menuitem\" href=\"/pages/formsBackbone.html\">Backbone Forms</a>\n</nav>";
+	module.exports = "<nav>\n  <a role=\"menuitem\" href=\"/pages/todo.html\">Todo Application</a>\n  <a role=\"menuitem\" href=\"/pages/project.html\">My Project</a>\n  <a role=\"menuitem\" href=\"/pages/photoSearch.html\">Photo Search</a>\n  <a role=\"menuitem\" href=\"/pages/funnySquares.html\">Funny Squares</a>\n  <a role=\"menuitem\" href=\"/pages/formsBackbone.html\">Backbone Forms</a>\n</nav>";
+
+/***/ },
+/* 62 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var app = {
+	  init: function init() {
+	    app.bindEvents();
+	  },
+	  render: function render() {},
+	  bindEvents: function bindEvents() {
+	    $('.input-search').on('keypress', function (event) {
+	      if (event.which === 13) {
+	        app.doSearch();
+	      }
+	    });
+	  },
+	  doSearch: function doSearch() {
+	    var phrase = $('.input-search').val();
+	    $.ajax({
+	      url: 'https://api.flickr.com/services/rest',
+	      method: 'GET',
+	      data: {
+	        text: phrase,
+	        method: 'flickr.photos.search',
+	        api_key: '731717db25329eb6aa65703cb6b71970',
+	        format: 'json',
+	        per_page: 3
+	      },
+	      complete: function complete(response) {
+	        var text = response.responseText;
+	        var len = text.length;
+	        text = text.slice(14, len - 1);
+	        var photos = JSON.parse(text);
+	        console.log(photos);
+	      }
+	    });
+	  }
+	};
+	
+	// var photoURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_m.jpg'
+	// var photoURL = 'http://farm' + item.farm + '.static.flickr.com/' + item.server + '/' + item.id + '_' + item.secret + '_b.jpg'
+	
+	module.exports = app;
 
 /***/ }
 /******/ ]);

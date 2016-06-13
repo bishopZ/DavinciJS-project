@@ -3,6 +3,7 @@ import $ from 'jquery';
 import 'styles/main.scss';
 import todos from 'pages/todo-backbone';
 import project from 'pages/project';
+import photoSearch from 'pages/photoSearch';
 import funnySquares from 'pages/funnySquares';
 import formsBackbone from 'pages/formsBackbone';
 import header from 'components/header';
@@ -22,6 +23,9 @@ $(function(){
     case '/':
       // init the project javascript
       // home.init();
+    break;
+    case '/pages/photoSearch.html':
+      photoSearch.init();
     break;
     case '/pages/funnySquares.html':
       funnySquares.init();
