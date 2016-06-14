@@ -21307,10 +21307,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _underscore = __webpack_require__(7);
-	
-	var _underscore2 = _interopRequireDefault(_underscore);
-	
 	var _backbone = __webpack_require__(8);
 	
 	var _backbone2 = _interopRequireDefault(_backbone);
@@ -21330,11 +21326,6 @@
 	// Controller View
 	
 	var $ = __webpack_require__(1);
-	
-	// legacy loading for bootstrap
-	window.jQuery = window.$ = $;
-	__webpack_require__(41);
-	
 	var TodoControllerView = _backbone2['default'].View.extend({
 	  el: '.todo-container',
 	  model: _pagesTodoTodoModel2['default'],
@@ -21405,11 +21396,6 @@
 	// Model
 	
 	var $ = __webpack_require__(1);
-	
-	// legacy loading for bootstrap
-	window.jQuery = window.$ = $;
-	__webpack_require__(41);
-	
 	var TodoModel = _backbone2['default'].Model.extend({
 	  defaults: {
 	    todos: []
@@ -21480,10 +21466,6 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 	
-	var _underscore = __webpack_require__(7);
-	
-	var _underscore2 = _interopRequireDefault(_underscore);
-	
 	var _backbone = __webpack_require__(8);
 	
 	var _backbone2 = _interopRequireDefault(_backbone);
@@ -21499,11 +21481,6 @@
 	// Item View
 	
 	var $ = __webpack_require__(1);
-	
-	// legacy loading for bootstrap
-	window.jQuery = window.$ = $;
-	__webpack_require__(41);
-	
 	var TodoItemView = _backbone2['default'].View.extend({
 	  tagName: 'li', // el = <li class="list-group-item"></li>
 	  className: 'list-group-item row',
