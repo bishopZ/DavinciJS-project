@@ -20,6 +20,12 @@
 .search-container .photo {
   width: 100px;
   height: 100px;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.search-container .photo img {
+  width: 100%;
 }
 
 h1 {

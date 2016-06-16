@@ -16,7 +16,7 @@ var TodoItemView = Backbone.View.extend({
   },
   template: Handlebars.compile(todoItemTemplate),
   initialize: function(todo, controller){
-  	this.controller = controller;
+    this.controller = controller;
     this.data = todo;
     this.render();
   },

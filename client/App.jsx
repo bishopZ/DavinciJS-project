@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import 'styles/main.scss';
 import TodoControllerView from 'pages/todo/todoController';
-import project from 'pages/project';
+// import project from 'pages/project';
 import photoSearch from 'pages/photoSearch';
 import funnySquares from 'pages/funnySquares';
 import formsBackbone from 'pages/formsBackbone';
@@ -37,10 +37,10 @@ $(function(){
   }
 
   // Fancy Console Message for Developers
-  console.log('================================');
-  console.log('=====I am looking for a job=====');
-  console.log('============call me=============');
-  console.log('================================');
+  // console.log('================================');
+  // console.log('=====I am looking for a job=====');
+  // console.log('============call me=============');
+  // console.log('================================');
 
 });
 
