@@ -37,7 +37,11 @@ var app = {
         var text = response.responseText;
         text = text.slice(14, text.length - 1);
         var data = JSON.parse(text);
-        app.renderResults(data);
+        if (data) {
+          app.renderResults(data);
+        } else {
+          // error!!!
+        }
       }
     });
   },

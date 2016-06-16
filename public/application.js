@@ -10005,7 +10005,7 @@
 	  },
 	  initialize: function initialize() {
 	    this.model.fetch();
-	    this.render();
+	    this.model.on('change', this.render, this);
 	  },
 	  render: function render() {
 	    // render the todo items
@@ -18344,14 +18344,22 @@
 	    completed: false
 	  },
 	  fetch: function fetch() {
-	    var data = _lscache2['default'].get('elephant');
-	    data = this.applySchema(data);
-	    this.set('todos', data);
+	    var that = this;
+	    $.ajax({
+	      url: '/api',
+	      method: 'GET',
+	      complete: function complete(response) {
+	        var dataString = response.responseText;
+	        var data = JSON.parse(dataString);
+	        data = that.applySchema(data);
+	        that.set('todos', data);
+	      }
+	    });
 	  },
 	  save: function save() {
-	    var data = this.get('todos');
-	    data = this.applySchema(data);
-	    _lscache2['default'].set('elephant', data);
+	    // var data = this.get('todos');
+	    // data = this.applySchema(data);
+	    // lscache.set('elephant', data);
 	  },
 	  applySchema: function applySchema(todos) {
 	    var data = todos;
@@ -18881,7 +18889,11 @@
 	        var text = response.responseText;
 	        text = text.slice(14, text.length - 1);
 	        var data = JSON.parse(text);
-	        app.renderResults(data);
+	        if (data) {
+	          app.renderResults(data);
+	        } else {
+	          // error!!!
+	        }
 	      }
 	    });
 	  },
