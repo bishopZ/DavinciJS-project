@@ -9,6 +9,28 @@ var fs = require('fs');
 
 var databasePath = __dirname + '/database.json';
 
+var readDatabase = function(callback){
+  fs.readFile(databasePath, function(err, data){
+    if (err) { console.log(err); }
+    // parse data from a string
+    var parsedData = JSON.parse(data);
+    if (!parsedData) { console.log('Database is corrupted!!'); }
+    callback(parsedData);
+  });
+}
+
+var saveDatabase = function(data, res){
+  // convert database back to a string
+  var newDBString = JSON.stringify(data);
+  fs.writeFile(databasePath, newDBString, function(err){
+    if (err) { console.log(err); }
+    // respond to the client
+    res.writeHead(200, {'Content-Type': 'text/json'});
+    res.write(newDBString);
+    res.end();
+  });
+}
+
 router.get('/api', function(req, res){
   // read in the database
   fs.readFile(databasePath, function(err, data){
@@ -23,26 +45,33 @@ router.get('/api', function(req, res){
 
 router.post('/api', function(req, res){
   var newTodo = req.body;
-  console.log(newTodo);
-  fs.readFile(databasePath, function(err, data){
-    if (err) { console.log(err); }
-    // parse data from a string
-    var parsedData = JSON.parse(data);
-    if (!parsedData) { console.log('Database is corrupted!!'); }
+  readDatabase(function(parsedData){
     // add new item to the database
     parsedData.push(newTodo);
-    // convert database back to a string
-    var newDBString = JSON.stringify(parsedData);
-    fs.writeFile(databasePath, newDBString, function(err){
-      if (err) { console.log(err); }
-      // respond to the client
-      res.writeHead(200, {'Content-Type': 'text/json'});
-      res.write(newDBString);
-      res.end();
-    });
+    saveDatabase(parsedData, res);
   });
 });
 
+router.delete('/api', function(req, res){
+  var editId = req.body.id;
+  readDatabase(function(parsedData){
+    // remove item
+    parsedData.splice(editId, 1);
+    // save db
+    saveDatabase(parsedData, res);
+  });
+});
+
+router.put('/api', function(req, res){
+  var editId = req.body.id;
+  var todoData = req.body.todo;
+  readDatabase(function(parsedData){
+    // update item
+    parsedData[editId] = todoData;
+    // save db
+    saveDatabase(parsedData, res);
+  });
+});
 
 // Everything route
 
