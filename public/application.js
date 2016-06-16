@@ -18327,9 +18327,7 @@
 	
 	var _backbone2 = _interopRequireDefault(_backbone);
 	
-	var _lscache = __webpack_require__(40);
-	
-	var _lscache2 = _interopRequireDefault(_lscache);
+	// import lscache from 'lscache';
 	
 	// Model
 	
@@ -18344,22 +18342,26 @@
 	    completed: false
 	  },
 	  fetch: function fetch() {
-	    var that = this;
 	    $.ajax({
 	      url: '/api',
 	      method: 'GET',
-	      complete: function complete(response) {
-	        var dataString = response.responseText;
-	        var data = JSON.parse(dataString);
-	        data = that.applySchema(data);
-	        that.set('todos', data);
-	      }
+	      complete: _underscore2['default'].bind(this.handleAjaxResponse, this)
 	    });
 	  },
 	  save: function save() {
-	    // var data = this.get('todos');
-	    // data = this.applySchema(data);
-	    // lscache.set('elephant', data);
+	    var data = this.get('todos');
+	    $.ajax({
+	      url: '/api',
+	      method: 'POST',
+	      data: { todos: JSON.stringify(data) },
+	      complete: _underscore2['default'].bind(this.handleAjaxResponse, this)
+	    });
+	  },
+	  handleAjaxResponse: function handleAjaxResponse(response) {
+	    var dataString = response.responseText;
+	    var data = JSON.parse(dataString);
+	    data = this.applySchema(data);
+	    this.set('todos', data);
 	  },
 	  applySchema: function applySchema(todos) {
 	    var data = todos;

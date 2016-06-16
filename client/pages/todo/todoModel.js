@@ -1,7 +1,7 @@
 var $ = require('jquery');
 import _ from 'underscore';
 import Backbone from 'backbone';
-import lscache from 'lscache';
+// import lscache from 'lscache';
 
 // Model
 
@@ -15,23 +15,27 @@ var TodoModel = Backbone.Model.extend({
     completed: false
   },
   fetch: function(){
-    var that = this;
     $.ajax({
       url: '/api',
       method: 'GET',
-      complete: function(response){
-        var dataString = response.responseText;
-        var data = JSON.parse(dataString);
-        data = that.applySchema(data);
-        that.set('todos', data);
-      }
+      complete: _.bind(this.handleAjaxResponse, this)
     });
   },
   save: function(){
-    // var data = this.get('todos');
-    // data = this.applySchema(data);
-    // lscache.set('elephant', data);
-  }, 
+    var data = this.get('todos');
+    $.ajax({
+      url: '/api',
+      method: 'POST',
+      data: { todos: JSON.stringify(data) },
+      complete: _.bind(this.handleAjaxResponse, this)
+    });
+  },
+  handleAjaxResponse: function(response){
+    var dataString = response.responseText;
+    var data = JSON.parse(dataString);
+    data = this.applySchema(data);
+    this.set('todos', data);
+  },
   applySchema: function(todos){
     var data = todos;
     var schema = this.todoSchema;
