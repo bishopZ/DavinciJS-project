@@ -1,6 +1,5 @@
-var $ = require('jquery');
+
 import Backbone from 'backbone';
-import Handlebars from 'handlebars';
 import todoModel from 'pages/todo/todoModel';
 import TodoItemView from 'pages/todo/todoView';
 
