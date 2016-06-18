@@ -60,15 +60,15 @@
 	
 	// import project from 'pages/project';
 	
-	var _pagesPhotoSearch = __webpack_require__(44);
+	var _pagesPhotoSearch = __webpack_require__(42);
 	
 	var _pagesPhotoSearch2 = _interopRequireDefault(_pagesPhotoSearch);
 	
-	var _pagesFunnySquares = __webpack_require__(45);
+	var _pagesFunnySquares = __webpack_require__(44);
 	
 	var _pagesFunnySquares2 = _interopRequireDefault(_pagesFunnySquares);
 	
-	var _pagesFormsBackbone = __webpack_require__(47);
+	var _pagesFormsBackbone = __webpack_require__(46);
 	
 	var _pagesFormsBackbone2 = _interopRequireDefault(_pagesFormsBackbone);
 	
@@ -9990,7 +9990,7 @@
 	
 	var _pagesTodoTodoModel2 = _interopRequireDefault(_pagesTodoTodoModel);
 	
-	var _pagesTodoTodoView = __webpack_require__(41);
+	var _pagesTodoTodoView = __webpack_require__(40);
 	
 	var _pagesTodoTodoView2 = _interopRequireDefault(_pagesTodoTodoView);
 	
@@ -18327,7 +18327,7 @@
 	
 	var _backbone2 = _interopRequireDefault(_backbone);
 	
-	var _lscache = __webpack_require__(40);
+	var _lscache = __webpack_require__(47);
 	
 	var _lscache2 = _interopRequireDefault(_lscache);
 	
@@ -18357,9 +18357,20 @@
 	    });
 	  },
 	  save: function save() {
-	    // var data = this.get('todos');
-	    // data = this.applySchema(data);
-	    // lscache.set('elephant', data);
+	    var that = this;
+	    var todos = this.get('todos');
+	    $.ajax({
+	      url: '/api',
+	      method: 'POST',
+	      data: { todos: JSON.stringify(todos) },
+	      complete: function complete(response) {
+	        debugger;
+	        var dataString = response.responseText;
+	        var data = JSON.parse(dataString);
+	        data = that.applySchema(data);
+	        that.set('todos', data);
+	      }
+	    });
 	  },
 	  applySchema: function applySchema(todos) {
 	    var data = todos;
@@ -18406,6 +18417,327 @@
 
 /***/ },
 /* 40 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _backbone = __webpack_require__(7);
+	
+	var _backbone2 = _interopRequireDefault(_backbone);
+	
+	var _handlebars = __webpack_require__(9);
+	
+	var _handlebars2 = _interopRequireDefault(_handlebars);
+	
+	var _templatesTodoItemHtml = __webpack_require__(41);
+	
+	var _templatesTodoItemHtml2 = _interopRequireDefault(_templatesTodoItemHtml);
+	
+	// Item View
+	
+	var $ = __webpack_require__(1);
+	var TodoItemView = _backbone2['default'].View.extend({
+	  tagName: 'li', // el = <li class="list-group-item"></li>
+	  className: 'list-group-item row',
+	  events: {
+	    'click .close': 'removeItem',
+	    'change .completed-checkbox': 'completedClicked',
+	    'click .title': 'titleClicked',
+	    'keypress .title-edit-input': 'titleEditConfirm'
+	  },
+	  template: _handlebars2['default'].compile(_templatesTodoItemHtml2['default']),
+	  initialize: function initialize(todo, controller) {
+	    this.controller = controller;
+	    this.data = todo;
+	    this.render();
+	  },
+	  render: function render() {
+	    this.$el.html(this.template(this.data));
+	    this.$title = this.$el.find('.title');
+	    this.$titleEdit = this.$el.find('.title-edit');
+	    this.$titleInput = this.$titleEdit.find('.title-edit-input');
+	    this.$el.toggleClass('disabled', this.data.completed);
+	  },
+	  removeItem: function removeItem() {
+	    this.controller.removeItem(this.data.id);
+	  },
+	  completedClicked: function completedClicked(event) {
+	    var isChecked = $(event.target).is(':checked');
+	    this.controller.itemCompleted(this.data.id, isChecked);
+	  },
+	  titleClicked: function titleClicked() {
+	    this.$title.addClass('hidden');
+	    this.$titleEdit.removeClass('hidden');
+	    this.$titleInput.focus();
+	  },
+	  titleEditConfirm: function titleEditConfirm(event) {
+	    // they hit the enter key
+	    if (event.which === 13) {
+	      var newTitle = this.$titleInput.val();
+	      this.controller.titleEdit(newTitle, this.data.id);
+	    }
+	  }
+	});
+	
+	module.exports = TodoItemView;
+
+/***/ },
+/* 41 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"col-sm-1\">\n  {{#if completed}}\n    <input class=\"completed-checkbox\" type=\"checkbox\" checked>\n  {{else}}\n    <input class=\"completed-checkbox\" type=\"checkbox\">\n  {{/if}}\n</div>\n<div class=\"col-sm-10 title\">{{title}}</div>\n<div class=\"col-sm-10 title-edit hidden\">\n  <input type=\"text\" class=\"form-control title-edit-input\" value=\"{{title}}\">\n</div>\n<div class=\"col-sm-1\">\n  <button type=\"button\" class=\"close\" aria-label=\"Close\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n";
+
+/***/ },
+/* 42 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _jquery = __webpack_require__(1);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _handlebars = __webpack_require__(9);
+	
+	var _handlebars2 = _interopRequireDefault(_handlebars);
+	
+	var _templatesFlickrImageHtml = __webpack_require__(43);
+	
+	var _templatesFlickrImageHtml2 = _interopRequireDefault(_templatesFlickrImageHtml);
+	
+	var compiledTemplate = _handlebars2['default'].compile(_templatesFlickrImageHtml2['default']);
+	
+	var app = {
+	  init: function init() {
+	    app.render();
+	  },
+	  render: function render() {
+	    app.$input = (0, _jquery2['default'])('.search-container input');
+	    app.bindEvents();
+	  },
+	  bindEvents: function bindEvents() {
+	    app.$input.on('keypress', app.searchKeypress);
+	  },
+	  searchKeypress: function searchKeypress(event) {
+	    if (event.which === 13) {
+	      app.doSearch();
+	    }
+	  },
+	  doSearch: function doSearch() {
+	    var phrase = app.$input.val();
+	    _jquery2['default'].ajax({
+	      url: 'https://api.flickr.com/services/rest',
+	      method: 'GET',
+	      data: {
+	        text: phrase,
+	        method: 'flickr.photos.search',
+	        api_key: '731717db25329eb6aa65703cb6b71970',
+	        format: 'json',
+	        per_page: 30
+	      },
+	      complete: function complete(response) {
+	        var text = response.responseText;
+	        text = text.slice(14, text.length - 1);
+	        var data = JSON.parse(text);
+	        if (data) {
+	          app.renderResults(data);
+	        } else {
+	          // error!!!
+	        }
+	      }
+	    });
+	  },
+	  renderResults: function renderResults(data) {
+	    // pass data to the template
+	    var html = '';
+	    var myPhotos = data.photos.photo;
+	    myPhotos.forEach(function (item) {
+	      html = html + compiledTemplate(item);
+	    });
+	    // append result to the .search-result div
+	    (0, _jquery2['default'])('.search-results').html(html);
+	  }
+	};
+	
+	module.exports = app;
+
+/***/ },
+/* 43 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"photo\">\n  <img src=\"https://farm{{farm}}.static.flickr.com/{{server}}/{{id}}_{{secret}}_b.jpg\">\n</div>";
+
+/***/ },
+/* 44 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _jquery = __webpack_require__(1);
+	
+	var _jquery2 = _interopRequireDefault(_jquery);
+	
+	var _underscore = __webpack_require__(8);
+	
+	var _underscore2 = _interopRequireDefault(_underscore);
+	
+	var _templatesFunnySquareHtml = __webpack_require__(45);
+	
+	var _templatesFunnySquareHtml2 = _interopRequireDefault(_templatesFunnySquareHtml);
+	
+	var _handlebars = __webpack_require__(9);
+	
+	var _handlebars2 = _interopRequireDefault(_handlebars);
+	
+	var template;
+	var app = {
+	  init: function init() {
+	    template = _handlebars2['default'].compile(_templatesFunnySquareHtml2['default']);
+	    app.render();
+	  },
+	  render: function render() {
+	    // display 6 squares
+	    var numberOfSquares = 6;
+	    var renderedHtml = '';
+	    _underscore2['default'].times(numberOfSquares, function (index) {
+	      renderedHtml += template({ id: index + 1 });
+	    });
+	    (0, _jquery2['default'])('body').append(renderedHtml);
+	  }
+	};
+	
+	module.exports = app;
+
+/***/ },
+/* 45 */
+/***/ function(module, exports) {
+
+	module.exports = "<div class=\"square-container\">\n  <div class=\"square square{{id}}\">\n    <div class=\"inner\">{{id}}</div>\n  </div>\n</div>";
+
+/***/ },
+/* 46 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	// import _ from 'underscore';
+	
+	var _backbone = __webpack_require__(7);
+	
+	var _backbone2 = _interopRequireDefault(_backbone);
+	
+	var _handlebars = __webpack_require__(9);
+	
+	var _handlebars2 = _interopRequireDefault(_handlebars);
+	
+	var _lscache = __webpack_require__(47);
+	
+	var _lscache2 = _interopRequireDefault(_lscache);
+	
+	var _templatesAccountListHtml = __webpack_require__(48);
+	
+	var _templatesAccountListHtml2 = _interopRequireDefault(_templatesAccountListHtml);
+	
+	var _templatesCreateAccountHtml = __webpack_require__(49);
+	
+	var _templatesCreateAccountHtml2 = _interopRequireDefault(_templatesCreateAccountHtml);
+	
+	// Model
+	
+	var $ = __webpack_require__(1);
+	
+	// legacy loading for bootstrap
+	window.jQuery = window.$ = $;
+	__webpack_require__(50);var accountModelConfigObject = {
+	  defaults: {
+	    accounts: []
+	  },
+	  save: function save() {
+	    var data = this.get('accounts');
+	    _lscache2['default'].set('accounts', data);
+	  },
+	  fetch: function fetch() {
+	    var data = _lscache2['default'].get('accounts');
+	    data = data || [];
+	    this.set('accounts', data);
+	  }
+	};
+	
+	var AccountModel = _backbone2['default'].Model.extend(accountModelConfigObject);
+	var accountModel = new AccountModel();
+	
+	// Controller
+	
+	var controllerConfigObject = {
+	  el: '.page-container',
+	  model: accountModel,
+	  events: {
+	    'click .btn-create': 'createNewAccount'
+	  },
+	  initialize: function initialize() {
+	    this.model.fetch();
+	  },
+	  render: function render() {
+	    var listView = new ListView();
+	    this.$el.find('.view-container').html(listView.$el);
+	  },
+	  createNewAccount: function createNewAccount() {
+	    var createView = new CreateView();
+	    this.$el.find('.view-container').html(createView.$el);
+	  }
+	};
+	
+	var AccountControllerView = _backbone2['default'].View.extend(controllerConfigObject);
+	
+	// Views
+	
+	var listViewConfig = {
+	  tagName: 'div',
+	  events: {},
+	  template: _handlebars2['default'].compile(_templatesAccountListHtml2['default']),
+	  initialize: function initialize() {
+	    this.render();
+	  },
+	  render: function render() {
+	    var renderedTemplate = this.template({});
+	    this.$el.html(renderedTemplate);
+	  }
+	};
+	var ListView = _backbone2['default'].View.extend(listViewConfig);
+	
+	var createViewConfig = {
+	  tagName: 'div',
+	  template: _handlebars2['default'].compile(_templatesCreateAccountHtml2['default']),
+	  events: {
+	    'click': 'submitForm'
+	  },
+	  initialize: function initialize() {
+	    this.render();
+	  },
+	  render: function render() {
+	    var renderedTemplate = this.template({});
+	    this.$el.html(renderedTemplate);
+	  },
+	  submitForm: function submitForm() {
+	    accountControllerView.render();
+	  }
+	};
+	var CreateView = _backbone2['default'].View.extend(createViewConfig);
+	
+	var accountControllerView = new AccountControllerView();
+	
+	module.exports = accountControllerView;
+
+/***/ },
+/* 47 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -18759,322 +19091,6 @@
 	  return lscache;
 	}));
 
-
-/***/ },
-/* 41 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _backbone = __webpack_require__(7);
-	
-	var _backbone2 = _interopRequireDefault(_backbone);
-	
-	var _handlebars = __webpack_require__(9);
-	
-	var _handlebars2 = _interopRequireDefault(_handlebars);
-	
-	var _templatesTodoItemHtml = __webpack_require__(42);
-	
-	var _templatesTodoItemHtml2 = _interopRequireDefault(_templatesTodoItemHtml);
-	
-	// Item View
-	
-	var $ = __webpack_require__(1);
-	var TodoItemView = _backbone2['default'].View.extend({
-	  tagName: 'li', // el = <li class="list-group-item"></li>
-	  className: 'list-group-item row',
-	  events: {
-	    'click .close': 'removeItem',
-	    'change .completed-checkbox': 'completedClicked',
-	    'click .title': 'titleClicked',
-	    'keypress .title-edit-input': 'titleEditConfirm'
-	  },
-	  template: _handlebars2['default'].compile(_templatesTodoItemHtml2['default']),
-	  initialize: function initialize(todo, controller) {
-	    this.controller = controller;
-	    this.data = todo;
-	    this.render();
-	  },
-	  render: function render() {
-	    this.$el.html(this.template(this.data));
-	    this.$title = this.$el.find('.title');
-	    this.$titleEdit = this.$el.find('.title-edit');
-	    this.$titleInput = this.$titleEdit.find('.title-edit-input');
-	    this.$el.toggleClass('disabled', this.data.completed);
-	  },
-	  removeItem: function removeItem() {
-	    this.controller.removeItem(this.data.id);
-	  },
-	  completedClicked: function completedClicked(event) {
-	    var isChecked = $(event.target).is(':checked');
-	    this.controller.itemCompleted(this.data.id, isChecked);
-	  },
-	  titleClicked: function titleClicked() {
-	    this.$title.addClass('hidden');
-	    this.$titleEdit.removeClass('hidden');
-	    this.$titleInput.focus();
-	  },
-	  titleEditConfirm: function titleEditConfirm(event) {
-	    // they hit the enter key
-	    if (event.which === 13) {
-	      var newTitle = this.$titleInput.val();
-	      this.controller.titleEdit(newTitle, this.data.id);
-	    }
-	  }
-	});
-	
-	module.exports = TodoItemView;
-
-/***/ },
-/* 42 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"col-sm-1\">\n  {{#if completed}}\n    <input class=\"completed-checkbox\" type=\"checkbox\" checked>\n  {{else}}\n    <input class=\"completed-checkbox\" type=\"checkbox\">\n  {{/if}}\n</div>\n<div class=\"col-sm-10 title\">{{title}}</div>\n<div class=\"col-sm-10 title-edit hidden\">\n  <input type=\"text\" class=\"form-control title-edit-input\" value=\"{{title}}\">\n</div>\n<div class=\"col-sm-1\">\n  <button type=\"button\" class=\"close\" aria-label=\"Close\">\n    <span aria-hidden=\"true\">&times;</span>\n  </button>\n</div>\n";
-
-/***/ },
-/* 43 */,
-/* 44 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _jquery = __webpack_require__(1);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	var _handlebars = __webpack_require__(9);
-	
-	var _handlebars2 = _interopRequireDefault(_handlebars);
-	
-	var _templatesFlickrImageHtml = __webpack_require__(65);
-	
-	var _templatesFlickrImageHtml2 = _interopRequireDefault(_templatesFlickrImageHtml);
-	
-	var compiledTemplate = _handlebars2['default'].compile(_templatesFlickrImageHtml2['default']);
-	
-	var app = {
-	  init: function init() {
-	    app.render();
-	  },
-	  render: function render() {
-	    app.$input = (0, _jquery2['default'])('.search-container input');
-	    app.bindEvents();
-	  },
-	  bindEvents: function bindEvents() {
-	    app.$input.on('keypress', app.searchKeypress);
-	  },
-	  searchKeypress: function searchKeypress(event) {
-	    if (event.which === 13) {
-	      app.doSearch();
-	    }
-	  },
-	  doSearch: function doSearch() {
-	    var phrase = app.$input.val();
-	    _jquery2['default'].ajax({
-	      url: 'https://api.flickr.com/services/rest',
-	      method: 'GET',
-	      data: {
-	        text: phrase,
-	        method: 'flickr.photos.search',
-	        api_key: '731717db25329eb6aa65703cb6b71970',
-	        format: 'json',
-	        per_page: 30
-	      },
-	      complete: function complete(response) {
-	        var text = response.responseText;
-	        text = text.slice(14, text.length - 1);
-	        var data = JSON.parse(text);
-	        if (data) {
-	          app.renderResults(data);
-	        } else {
-	          // error!!!
-	        }
-	      }
-	    });
-	  },
-	  renderResults: function renderResults(data) {
-	    // pass data to the template
-	    var html = '';
-	    var myPhotos = data.photos.photo;
-	    myPhotos.forEach(function (item) {
-	      html = html + compiledTemplate(item);
-	    });
-	    // append result to the .search-result div
-	    (0, _jquery2['default'])('.search-results').html(html);
-	  }
-	};
-	
-	module.exports = app;
-
-/***/ },
-/* 45 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	var _jquery = __webpack_require__(1);
-	
-	var _jquery2 = _interopRequireDefault(_jquery);
-	
-	var _underscore = __webpack_require__(8);
-	
-	var _underscore2 = _interopRequireDefault(_underscore);
-	
-	var _templatesFunnySquareHtml = __webpack_require__(46);
-	
-	var _templatesFunnySquareHtml2 = _interopRequireDefault(_templatesFunnySquareHtml);
-	
-	var _handlebars = __webpack_require__(9);
-	
-	var _handlebars2 = _interopRequireDefault(_handlebars);
-	
-	var template;
-	var app = {
-	  init: function init() {
-	    template = _handlebars2['default'].compile(_templatesFunnySquareHtml2['default']);
-	    app.render();
-	  },
-	  render: function render() {
-	    // display 6 squares
-	    var numberOfSquares = 6;
-	    var renderedHtml = '';
-	    _underscore2['default'].times(numberOfSquares, function (index) {
-	      renderedHtml += template({ id: index + 1 });
-	    });
-	    (0, _jquery2['default'])('body').append(renderedHtml);
-	  }
-	};
-	
-	module.exports = app;
-
-/***/ },
-/* 46 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"square-container\">\n  <div class=\"square square{{id}}\">\n    <div class=\"inner\">{{id}}</div>\n  </div>\n</div>";
-
-/***/ },
-/* 47 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-	
-	// import _ from 'underscore';
-	
-	var _backbone = __webpack_require__(7);
-	
-	var _backbone2 = _interopRequireDefault(_backbone);
-	
-	var _handlebars = __webpack_require__(9);
-	
-	var _handlebars2 = _interopRequireDefault(_handlebars);
-	
-	var _lscache = __webpack_require__(40);
-	
-	var _lscache2 = _interopRequireDefault(_lscache);
-	
-	var _templatesAccountListHtml = __webpack_require__(48);
-	
-	var _templatesAccountListHtml2 = _interopRequireDefault(_templatesAccountListHtml);
-	
-	var _templatesCreateAccountHtml = __webpack_require__(49);
-	
-	var _templatesCreateAccountHtml2 = _interopRequireDefault(_templatesCreateAccountHtml);
-	
-	// Model
-	
-	var $ = __webpack_require__(1);
-	
-	// legacy loading for bootstrap
-	window.jQuery = window.$ = $;
-	__webpack_require__(50);var accountModelConfigObject = {
-	  defaults: {
-	    accounts: []
-	  },
-	  save: function save() {
-	    var data = this.get('accounts');
-	    _lscache2['default'].set('accounts', data);
-	  },
-	  fetch: function fetch() {
-	    var data = _lscache2['default'].get('accounts');
-	    data = data || [];
-	    this.set('accounts', data);
-	  }
-	};
-	
-	var AccountModel = _backbone2['default'].Model.extend(accountModelConfigObject);
-	var accountModel = new AccountModel();
-	
-	// Controller
-	
-	var controllerConfigObject = {
-	  el: '.page-container',
-	  model: accountModel,
-	  events: {
-	    'click .btn-create': 'createNewAccount'
-	  },
-	  initialize: function initialize() {
-	    this.model.fetch();
-	  },
-	  render: function render() {
-	    var listView = new ListView();
-	    this.$el.find('.view-container').html(listView.$el);
-	  },
-	  createNewAccount: function createNewAccount() {
-	    var createView = new CreateView();
-	    this.$el.find('.view-container').html(createView.$el);
-	  }
-	};
-	
-	var AccountControllerView = _backbone2['default'].View.extend(controllerConfigObject);
-	
-	// Views
-	
-	var listViewConfig = {
-	  tagName: 'div',
-	  events: {},
-	  template: _handlebars2['default'].compile(_templatesAccountListHtml2['default']),
-	  initialize: function initialize() {
-	    this.render();
-	  },
-	  render: function render() {
-	    var renderedTemplate = this.template({});
-	    this.$el.html(renderedTemplate);
-	  }
-	};
-	var ListView = _backbone2['default'].View.extend(listViewConfig);
-	
-	var createViewConfig = {
-	  tagName: 'div',
-	  template: _handlebars2['default'].compile(_templatesCreateAccountHtml2['default']),
-	  events: {
-	    'click': 'submitForm'
-	  },
-	  initialize: function initialize() {
-	    this.render();
-	  },
-	  render: function render() {
-	    var renderedTemplate = this.template({});
-	    this.$el.html(renderedTemplate);
-	  },
-	  submitForm: function submitForm() {
-	    accountControllerView.render();
-	  }
-	};
-	var CreateView = _backbone2['default'].View.extend(createViewConfig);
-	
-	var accountControllerView = new AccountControllerView();
-	
-	module.exports = accountControllerView;
 
 /***/ },
 /* 48 */
@@ -21544,12 +21560,6 @@
 /***/ function(module, exports) {
 
 	module.exports = "<nav>\n  <a role=\"menuitem\" href=\"/pages/todo.html\">Todo Application</a>\n  <a role=\"menuitem\" href=\"/pages/project.html\">My Project</a>\n  <a role=\"menuitem\" href=\"/pages/photoSearch.html\">Photo Search</a>\n  <a role=\"menuitem\" href=\"/pages/funnySquares.html\">Funny Squares</a>\n  <a role=\"menuitem\" href=\"/pages/formsBackbone.html\">Backbone Forms</a>\n</nav>";
-
-/***/ },
-/* 65 */
-/***/ function(module, exports) {
-
-	module.exports = "<div class=\"photo\">\n  <img src=\"https://farm{{farm}}.static.flickr.com/{{server}}/{{id}}_{{secret}}_b.jpg\">\n</div>";
 
 /***/ }
 /******/ ]);
