@@ -2,7 +2,10 @@ var $ = require('jquery');
 import Backbone from 'backbone';
 import Handlebars from 'handlebars';
 import todoModel from 'pages/todo/todoModel';
-import TodoItemView from 'pages/todo/todoView';
+import TodoItemView from 'pages/todo/todoViewReact';
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 
 // Controller View
 
@@ -22,10 +25,17 @@ var TodoControllerView = Backbone.View.extend({
     var $ul = this.$el.find('.list-group');
     $ul.html('');
     var controller = this;
-    todos.map(function(todo){
-      var view = new TodoItemView(todo, controller);
-      $ul.append(view.$el);
+    todos.forEach(function(todo){
+      $ul.append('<li class="list-group-item row"></li>');
+      var domTarget = $ul.children().last()[0];
+      ReactDOM.render(
+        <TodoItemView data={todo} controller={controller} />,
+        domTarget
+      );
+      // var view = new TodoItemView(todo, controller);
+      // $ul.append(view.$el);
     });
+    
   },
   addTodoItem: function(){
     var $input = this.$el.find('.input-name');
