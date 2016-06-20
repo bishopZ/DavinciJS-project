@@ -35,7 +35,6 @@ var TodoModel = Backbone.Model.extend({
       method: 'POST',
       data: {todos: JSON.stringify(todos)},
       complete: function(response){
-        debugger;
         var dataString = response.responseText;
         var data = JSON.parse(dataString);
         data = that.applySchema(data);

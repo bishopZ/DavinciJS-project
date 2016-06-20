@@ -18364,7 +18364,6 @@
 	      method: 'POST',
 	      data: { todos: JSON.stringify(todos) },
 	      complete: function complete(response) {
-	        debugger;
 	        var dataString = response.responseText;
 	        var data = JSON.parse(dataString);
 	        data = that.applySchema(data);
