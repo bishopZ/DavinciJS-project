@@ -38401,54 +38401,54 @@
 	var _react2 = _interopRequireDefault(_react);
 	
 	var TodoItem = _react2["default"].createClass({
-		displayName: "TodoItem",
+	  displayName: "TodoItem",
 	
-		propTypes: {
-			data: _react.PropTypes.shape({
-				id: _react.PropTypes.number,
-				title: _react.PropTypes.string,
-				completed: _react.PropTypes.bool
-			})
-		},
-		render: function render() {
-			var todo = this.props.data;
-			return _react2["default"].createElement(
-				"div",
-				null,
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-1" },
-					_react2["default"].createElement("input", { className: "completed-checkbox", type: "checkbox", checked: todo.completed, onChange: this.handleComplete })
-				),
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-10 title", onClick: this.titleClick },
-					todo.title
-				),
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-10 title-edit hidden" },
-					_react2["default"].createElement("input", { type: "text", className: "form-control title-edit-input", value: "{todo.title}", onKeypress: this.editKeypress })
-				),
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-1" },
-					_react2["default"].createElement(
-						"button",
-						{ type: "button", className: "close", "aria-label": "Close", onClick: this.handleClose },
-						_react2["default"].createElement(
-							"span",
-							{ "aria-hidden": "true" },
-							"×"
-						)
-					)
-				)
-			);
-		},
-		handleComplete: function handleComplete() {},
-		handleClose: function handleClose() {},
-		titleClick: function titleClick() {},
-		editKeypress: function editKeypress() {}
+	  propTypes: {
+	    data: _react.PropTypes.shape({
+	      id: _react.PropTypes.number,
+	      title: _react.PropTypes.string,
+	      completed: _react.PropTypes.bool
+	    })
+	  },
+	  render: function render() {
+	    var todo = this.props.data;
+	    return _react2["default"].createElement(
+	      "div",
+	      null,
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-1" },
+	        _react2["default"].createElement("input", { className: "completed-checkbox", type: "checkbox", checked: todo.completed, onChange: this.handleComplete })
+	      ),
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-10 title", onClick: this.titleClick },
+	        todo.title
+	      ),
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-10 title-edit hidden" },
+	        _react2["default"].createElement("input", { type: "text", className: "form-control title-edit-input", value: "{todo.title}", onKeypress: this.editKeypress })
+	      ),
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-1" },
+	        _react2["default"].createElement(
+	          "button",
+	          { type: "button", className: "close", "aria-label": "Close", onClick: this.handleClose },
+	          _react2["default"].createElement(
+	            "span",
+	            { "aria-hidden": "true" },
+	            "×"
+	          )
+	        )
+	      )
+	    );
+	  },
+	  handleComplete: function handleComplete() {},
+	  handleClose: function handleClose() {},
+	  titleClick: function titleClick() {},
+	  editKeypress: function editKeypress() {}
 	});
 	
 	module.exports = TodoItem;
