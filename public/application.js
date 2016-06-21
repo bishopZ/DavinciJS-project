@@ -9990,9 +9990,7 @@
 	
 	var _backbone2 = _interopRequireDefault(_backbone);
 	
-	var _handlebars = __webpack_require__(167);
-	
-	var _handlebars2 = _interopRequireDefault(_handlebars);
+	// import Handlebars from 'handlebars';
 	
 	var _pagesTodoReactTodoModel = __webpack_require__(197);
 	
@@ -10024,32 +10022,30 @@
 	    todos.forEach(function (todo) {
 	      var $li = $('<li class="list-group-item row"></li>');
 	      $ul.append($li);
-	      _reactDom2['default'].render(_react2['default'].createElement(_pagesTodoReactTodoView2['default'], { data: todo }), $li[0] // get original DOMnode from jQuery object
+	      _reactDom2['default'].render(_react2['default'].createElement(_pagesTodoReactTodoView2['default'], { data: todo, controller: controller }), $li[0] // get original DOMnode from jQuery object
 	      );
 	    });
-	  },
-	  addTodoItem: function addTodoItem() {
-	    var $input = this.$el.find('.input-name');
-	    var newTitle = $input.val();
-	    if (newTitle === '') {
-	      return;
-	    }
-	    this.model.addItem(newTitle);
-	    $input.val('');
-	    this.render();
-	  },
-	  removeItem: function removeItem(id) {
-	    this.model.removeItem(id);
-	    this.render();
-	  },
-	  itemCompleted: function itemCompleted(id, isCompleted) {
-	    this.model.itemCompleted(id, isCompleted);
-	    this.render();
-	  },
-	  titleEdit: function titleEdit(newTitle, id) {
-	    this.model.editTitle(newTitle, id);
-	    this.render();
-	  }
+	  } // ,
+	  // addTodoItem: function(){
+	  //   var $input = this.$el.find('.input-name');
+	  //   var newTitle = $input.val();
+	  //   if (newTitle === '') { return; }
+	  //   this.model.addItem(newTitle);
+	  //   $input.val('');
+	  //   this.render();
+	  // },
+	  // removeItem: function(id){
+	  //   this.model.removeItem(id);
+	  //   this.render();
+	  // },
+	  // itemCompleted: function(id, isCompleted){
+	  //   this.model.itemCompleted(id, isCompleted);
+	  //   this.render();
+	  // },
+	  // titleEdit: function(newTitle, id){
+	  //   this.model.editTitle(newTitle, id);
+	  //   this.render();
+	  // }
 	});
 	
 	module.exports = TodoControllerView;
@@ -37945,9 +37941,7 @@
 	
 	var _backbone2 = _interopRequireDefault(_backbone);
 	
-	var _lscache = __webpack_require__(198);
-	
-	var _lscache2 = _interopRequireDefault(_lscache);
+	// import lscache from 'lscache';
 	
 	// Model
 	
@@ -37959,7 +37953,8 @@
 	  todoSchema: {
 	    id: 0,
 	    title: '',
-	    completed: false
+	    completed: false,
+	    isEditing: false
 	  },
 	  fetch: function fetch() {
 	    var that = this;
@@ -37986,6 +37981,7 @@
 	        var data = JSON.parse(dataString);
 	        data = that.applySchema(data);
 	        that.set('todos', data);
+	        that.trigger('change');
 	      }
 	    });
 	  },
@@ -38023,6 +38019,13 @@
 	    var todos = this.get('todos');
 	    var item = _underscore2['default'].findWhere(todos, { id: id });
 	    item.title = newTitle;
+	    this.set('todos', todos);
+	    this.save();
+	  },
+	  startEditing: function startEditing(id) {
+	    var todos = this.get('todos');
+	    var item = _underscore2['default'].findWhere(todos, { id: id });
+	    item.isEditing = !item.isEditing;
 	    this.set('todos', todos);
 	    this.save();
 	  }
@@ -38401,54 +38404,70 @@
 	var _react2 = _interopRequireDefault(_react);
 	
 	var TodoItem = _react2["default"].createClass({
-		displayName: "TodoItem",
+	  displayName: "TodoItem",
 	
-		propTypes: {
-			data: _react.PropTypes.shape({
-				id: _react.PropTypes.number,
-				title: _react.PropTypes.string,
-				completed: _react.PropTypes.bool
-			})
-		},
-		render: function render() {
-			var todo = this.props.data;
-			return _react2["default"].createElement(
-				"div",
-				null,
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-1" },
-					_react2["default"].createElement("input", { className: "completed-checkbox", type: "checkbox", checked: todo.completed, onChange: this.handleComplete })
-				),
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-10 title", onClick: this.titleClick },
-					todo.title
-				),
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-10 title-edit hidden" },
-					_react2["default"].createElement("input", { type: "text", className: "form-control title-edit-input", value: "{todo.title}", onKeypress: this.editKeypress })
-				),
-				_react2["default"].createElement(
-					"div",
-					{ className: "col-sm-1" },
-					_react2["default"].createElement(
-						"button",
-						{ type: "button", className: "close", "aria-label": "Close", onClick: this.handleClose },
-						_react2["default"].createElement(
-							"span",
-							{ "aria-hidden": "true" },
-							"×"
-						)
-					)
-				)
-			);
-		},
-		handleComplete: function handleComplete() {},
-		handleClose: function handleClose() {},
-		titleClick: function titleClick() {},
-		editKeypress: function editKeypress() {}
+	  propTypes: {
+	    data: _react.PropTypes.shape({
+	      id: _react.PropTypes.number,
+	      title: _react.PropTypes.string,
+	      completed: _react.PropTypes.bool,
+	      isEditing: _react.PropTypes.bool
+	    }),
+	    controller: _react.PropTypes.object
+	  },
+	  render: function render() {
+	    var todo = this.props.data;
+	
+	    var title = _react2["default"].createElement(
+	      "div",
+	      { className: "col-sm-10", onClick: this.titleClick },
+	      todo.title
+	    );
+	    if (todo.isEditing) {
+	      title = _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-10" },
+	        _react2["default"].createElement("input", { type: "text", className: "form-control title-edit-input", value: "{todo.title}", onKeypress: this.editKeypress })
+	      );
+	    }
+	
+	    return _react2["default"].createElement(
+	      "div",
+	      null,
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-1" },
+	        _react2["default"].createElement("input", { type: "checkbox", checked: todo.completed, onChange: this.handleComplete })
+	      ),
+	      title,
+	      _react2["default"].createElement(
+	        "div",
+	        { className: "col-sm-1" },
+	        _react2["default"].createElement(
+	          "button",
+	          { type: "button", "aria-label": "Close", onClick: this.handleClose },
+	          _react2["default"].createElement(
+	            "span",
+	            { "aria-hidden": "true" },
+	            "×"
+	          )
+	        )
+	      )
+	    );
+	  },
+	  handleComplete: function handleComplete() {
+	    this.props.controller.model.itemCompleted(this.props.data.id, !this.props.data.completed);
+	  },
+	  handleClose: function handleClose() {
+	    // remove todo
+	  },
+	  titleClick: function titleClick() {
+	    this.props.controller.model.startEditing(this.props.data.id);
+	  },
+	  editKeypress: function editKeypress() {
+	    // if esc stop editing
+	    // if return confirm edit
+	  }
 	});
 	
 	module.exports = TodoItem;

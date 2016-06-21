@@ -1,7 +1,7 @@
 var $ = require('jquery');
 import _ from 'underscore';
 import Backbone from 'backbone';
-import lscache from 'lscache';
+// import lscache from 'lscache';
 
 // Model
 
@@ -12,7 +12,8 @@ var TodoModel = Backbone.Model.extend({
   todoSchema: {
     id: 0,
     title: '',
-    completed: false
+    completed: false,
+    isEditing: false
   },
   fetch: function(){
     var that = this;
@@ -39,6 +40,7 @@ var TodoModel = Backbone.Model.extend({
         var data = JSON.parse(dataString);
         data = that.applySchema(data);
         that.set('todos', data);
+        that.trigger('change');
       }
     });
   }, 
@@ -76,6 +78,13 @@ var TodoModel = Backbone.Model.extend({
     var todos = this.get('todos');
     var item = _.findWhere(todos, {id: id});
     item.title = newTitle;
+    this.set('todos', todos);
+    this.save();
+  },
+  startEditing: function(id){
+    var todos = this.get('todos');
+    var item = _.findWhere(todos, {id: id});
+    item.isEditing = !item.isEditing;
     this.set('todos', todos);
     this.save();
   }
