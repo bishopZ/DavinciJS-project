@@ -54,11 +54,9 @@
 	
 	__webpack_require__(2);
 	
-	var _pagesTodoReactTodoController = __webpack_require__(6);
+	var _pagesTodoReactTodoListView = __webpack_require__(6);
 	
-	var _pagesTodoReactTodoController2 = _interopRequireDefault(_pagesTodoReactTodoController);
-	
-	// import project from 'pages/project';
+	var _pagesTodoReactTodoListView2 = _interopRequireDefault(_pagesTodoReactTodoListView);
 	
 	var _pagesPhotoSearch = __webpack_require__(169);
 	
@@ -86,7 +84,7 @@
 	  // our first javascript router
 	  switch (url) {
 	    case '/pages/todo.html':
-	      var todoControllerView = new _pagesTodoReactTodoController2['default']();
+	      var todoListView = new _pagesTodoReactTodoListView2['default']();
 	      break;
 	    case '/':
 	      // init the project javascript
@@ -9998,10 +9996,14 @@
 	
 	var _pagesTodoReactTodoView2 = _interopRequireDefault(_pagesTodoReactTodoView);
 	
+	var _pagesTodoReactTodoDispatcher = __webpack_require__(222);
+	
+	var _pagesTodoReactTodoDispatcher2 = _interopRequireDefault(_pagesTodoReactTodoDispatcher);
+	
 	// Controller View
 	
 	var $ = __webpack_require__(1);
-	var TodoControllerView = _backbone2['default'].View.extend({
+	var TodoListView = _backbone2['default'].View.extend({
 	  el: '.todo-container',
 	  model: _pagesTodoReactTodoModel2['default'],
 	  events: {
@@ -10016,11 +10018,10 @@
 	    var todos = this.model.get('todos');
 	    var $ul = this.$el.find('.list-group');
 	    $ul.html('');
-	    var controller = this;
 	    todos.forEach(function (todo) {
 	      var $li = $('<li class="list-group-item row"></li>');
 	      $ul.append($li);
-	      _reactDom2['default'].render(_react2['default'].createElement(_pagesTodoReactTodoView2['default'], { data: todo, controller: controller }), $li[0] // get original DOMnode from jQuery object
+	      _reactDom2['default'].render(_react2['default'].createElement(_pagesTodoReactTodoView2['default'], { data: todo }), $li[0] // get original DOMnode from jQuery object
 	      );
 	    });
 	  },
@@ -10030,13 +10031,12 @@
 	    if (newTitle === '') {
 	      return;
 	    }
-	    this.model.addItem(newTitle);
+	    _pagesTodoReactTodoDispatcher2['default'].addTodo(newTitle);
 	    $input.val('');
-	    this.render();
 	  }
 	});
 	
-	module.exports = TodoControllerView;
+	module.exports = TodoListView;
 
 /***/ },
 /* 7 */
@@ -33208,14 +33208,14 @@
 	    todos.splice(id, 1);
 	    this.save();
 	  },
-	  itemCompleted: function itemCompleted(id, isCompleted) {
+	  itemCompleted: function itemCompleted(id) {
 	    var todos = this.get('todos');
 	    var item = _underscore2['default'].findWhere(todos, { id: id });
-	    item.completed = isCompleted;
+	    item.completed = !item.completed;
 	    this.set('todos', todos);
 	    this.save();
 	  },
-	  editTitle: function editTitle(newTitle, id) {
+	  editTitle: function editTitle(id, newTitle) {
 	    if (newTitle.length > 0) {
 	      var todos = this.get('todos');
 	      var item = _underscore2['default'].findWhere(todos, { id: id });
@@ -33253,6 +33253,10 @@
 	var _react = __webpack_require__(7);
 	
 	var _react2 = _interopRequireDefault(_react);
+	
+	var _pagesTodoReactTodoDispatcher = __webpack_require__(222);
+	
+	var _pagesTodoReactTodoDispatcher2 = _interopRequireDefault(_pagesTodoReactTodoDispatcher);
 	
 	var TodoItem = _react2['default'].createClass({
 	  displayName: 'TodoItem',
@@ -33305,22 +33309,21 @@
 	  },
 	  handleComplete: function handleComplete() {
 	    var id = this.props.data.id;
-	    var newValue = !this.props.data.completed;
-	    this.props.controller.model.itemCompleted(id, newValue);
+	    _pagesTodoReactTodoDispatcher2['default'].clickComplete(id);
 	  },
 	  handleClose: function handleClose() {
 	    var id = this.props.data.id;
-	    this.props.controller.model.removeItem(id);
+	    _pagesTodoReactTodoDispatcher2['default'].removeTodo(id);
 	  },
 	  titleClick: function titleClick() {
 	    var id = this.props.data.id;
-	    this.props.controller.model.startEditing(id);
+	    _pagesTodoReactTodoDispatcher2['default'].startEditMode(id);
 	  },
 	  editKeypress: function editKeypress(event) {
 	    if (event.which === 13) {
 	      var id = this.props.data.id;
 	      var newTitle = (0, _jquery2['default'])('li').eq(id).find('input[type="text"]').val();
-	      this.props.controller.model.editTitle(newTitle, id);
+	      _pagesTodoReactTodoDispatcher2['default'].editTodoTitle(id, newTitle);
 	    }
 	  }
 	});
@@ -41184,6 +41187,39 @@
 /***/ function(module, exports) {
 
 	module.exports = "<nav>\n  <a role=\"menuitem\" href=\"/pages/todo.html\">Todo Application</a>\n  <a role=\"menuitem\" href=\"/pages/project.html\">My Project</a>\n  <a role=\"menuitem\" href=\"/pages/photoSearch.html\">Photo Search</a>\n  <a role=\"menuitem\" href=\"/pages/funnySquares.html\">Funny Squares</a>\n  <a role=\"menuitem\" href=\"/pages/formsBackbone.html\">Backbone Forms</a>\n</nav>";
+
+/***/ },
+/* 222 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+	
+	var _pagesTodoReactTodoModel = __webpack_require__(167);
+	
+	var _pagesTodoReactTodoModel2 = _interopRequireDefault(_pagesTodoReactTodoModel);
+	
+	var dispatcher = {
+	  init: function init() {},
+	  clickComplete: function clickComplete(id) {
+	    _pagesTodoReactTodoModel2['default'].itemCompleted(id);
+	  },
+	  addTodo: function addTodo(title) {
+	    _pagesTodoReactTodoModel2['default'].addItem(title);
+	  },
+	  removeTodo: function removeTodo(id) {
+	    _pagesTodoReactTodoModel2['default'].removeItem(id);
+	  },
+	  editTodoTitle: function editTodoTitle(id, title) {
+	    _pagesTodoReactTodoModel2['default'].editTitle(id, title);
+	  },
+	  startEditMode: function startEditMode(id) {
+	    _pagesTodoReactTodoModel2['default'].startEditing(id);
+	  }
+	};
+	
+	module.exports = dispatcher;
 
 /***/ }
 /******/ ]);
